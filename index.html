@@ -2,384 +2,552 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>WB / India Job OSINT Search — Custom Engine</title>
-    <!-- Tailwind CDN (Play/drop-in) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* small helpers */
-        .mono {
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OSINT Job Search Engine — Gov & Private</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+  </style>
 </head>
 
-<body class="bg-slate-50 text-slate-900">
-    <div class="max-w-5xl mx-auto p-6">
-        <header class="mb-6">
-            <h1 class="text-2xl font-semibold">OSINT Job Search Engine — Gov & Private</h1>
-            <p class="text-sm text-slate-600 mt-1">Build complex search queries (Google / Bing / DuckDuckGo). Tailor for
-                West Bengal, All-states, Central, private portals, PDFs and hidden notices.</p>
-        </header>
+<body class="bg-slate-900 text-slate-900">
+  <div class="min-h-screen flex flex-col">
+    <!-- Top bar -->
+    <header class="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div
+            class="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500 via-sky-500 to-emerald-400 flex items-center justify-center text-white text-lg font-semibold shadow-lg shadow-indigo-500/30">
+            J
+          </div>
+          <div>
+            <h1 class="text-lg font-semibold text-slate-50">OSINT Job Search Engine</h1>
+            <p class="text-xs text-slate-400">Gov & Private · India / States · Deep dorks, PDFs, hidden listings</p>
+          </div>
+        </div>
 
-        <main class="grid grid-cols-1 gap-6">
-            <section class="bg-white p-4 rounded-lg shadow-sm">
-                <div class="flex gap-3 items-center">
-                    <label class="inline-flex items-center gap-2">
-                        <input id="modeGov" type="radio" name="mode" checked class="form-radio" />
-                        <span>Government</span>
-                    </label>
-                    <label class="inline-flex items-center gap-2">
-                        <input id="modePriv" type="radio" name="mode" class="form-radio" />
-                        <span>Private</span>
-                    </label>
+        <a href="https://github.com/tarikulislam36/DeepJob"
+          class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium border border-slate-600 text-slate-100 hover:border-indigo-400 hover:text-indigo-100 hover:bg-indigo-500/10 transition">
+          <span>Contribute on GitHub</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M17 8l4 4m0 0l-4 4m4-4H7" />
+          </svg>
+        </a>
+      </div>
+    </header>
 
-                    <div class="ml-auto text-sm text-slate-500">Engine: <span id="engineLabel">Google</span></div>
-                </div>
+    <main class="flex-1">
+      <div class="max-w-6xl mx-auto px-4 py-6">
+        <!-- Main card -->
+        <section
+          class="bg-slate-950/70 text-slate-100 rounded-2xl shadow-2xl shadow-black/40 border border-slate-800 p-4 sm:p-6 lg:p-8">
+          <!-- Mode + engine row -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div class="inline-flex items-center gap-4">
+              <label class="inline-flex items-center gap-2 text-sm">
+                <input id="modeGov" type="radio" name="mode" checked
+                  class="h-4 w-4 accent-indigo-500 border-slate-500">
+                <span>Government</span>
+              </label>
+              <label class="inline-flex items-center gap-2 text-sm">
+                <input id="modePriv" type="radio" name="mode" class="h-4 w-4 accent-indigo-500 border-slate-500">
+                <span>Private</span>
+              </label>
+            </div>
 
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div>
-                        <label class="text-xs text-slate-600">Search keywords</label>
-                        <input id="keywords" class="w-full mt-1 p-2 border rounded"
-                            placeholder="e.g. data entry operator, web developer, junior developer" />
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-600">Exact phrase (optional)</label>
-                        <input id="exact" class="w-full mt-1 p-2 border rounded" placeholder="e.g. \" data entry
-                            operator\"" />
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-600">Exclude words (comma)</label>
-                        <input id="exclude" class="w-full mt-1 p-2 border rounded"
-                            placeholder="e.g. internship, volunteer" />
-                    </div>
-                </div>
+            <div class="sm:ml-auto flex items-center gap-2 text-xs text-slate-400">
+              <span>Engine:</span>
+              <span id="engineLabel" class="px-2 py-1 rounded-full bg-slate-800/80 text-slate-100 border border-slate-700">
+                Google
+              </span>
+              <select id="engine"
+                class="ml-1 px-2 py-1 rounded-md bg-slate-900 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                <option value="google">Google</option>
+                <option value="bing">Bing</option>
+                <option value="ddg">DuckDuckGo</option>
+              </select>
+            </div>
+          </div>
 
-                <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div>
-                        <label class="text-xs text-slate-600">Government scope</label>
-                        <select id="govScope" class="w-full mt-1 p-2 border rounded">
-                            <option value="state">State-level (choose state)</option>
-                            <option value="central">Central (All India)</option>
-                            <option value="all">All Govt (State + Central)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-600">Select State (for state-level)</label>
-                        <select id="stateSelect" class="w-full mt-1 p-2 border rounded">
-                            <option value="west bengal">West Bengal</option>
-                            <option value="all states">All states</option>
-                            <option value="maharashtra">Maharashtra</option>
-                            <option value="uttar pradesh">Uttar Pradesh</option>
-                            <option value="karnataka">Karnataka</option>
-                            <!-- Add more as needed -->
-                        </select>
-                    </div>
+          <!-- Inputs -->
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="text-xs uppercase tracking-wide text-slate-400">Search keywords</label>
+              <input id="keywords"
+                class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                placeholder="e.g. data entry operator, web developer, junior developer" />
+            </div>
+            <div>
+              <label class="text-xs uppercase tracking-wide text-slate-400">Exact phrase (optional)</label>
+              <input id="exact"
+                class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                placeholder='e.g. "data entry operator"' />
+            </div>
+            <div>
+              <label class="text-xs uppercase tracking-wide text-slate-400">Exclude words (comma)</label>
+              <input id="exclude"
+                class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                placeholder="e.g. internship, volunteer" />
+            </div>
+          </div>
 
-                    <div>
-                        <label class="text-xs text-slate-600">Private job sites to include (comma)</label>
-                        <input id="privateSites" class="w-full mt-1 p-2 border rounded"
-                            placeholder="e.g. naukri.com, indeed.co.in" />
-                    </div>
-                </div>
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="text-xs uppercase tracking-wide text-slate-400">Government scope</label>
+              <select id="govScope"
+                class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                <option value="state">State-level (choose state)</option>
+                <option value="central">Central (All India)</option>
+                <option value="all">All Govt (State + Central)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs uppercase tracking-wide text-slate-400">Select State (for state-level)</label>
+              <select id="stateSelect"
+                class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                <option value="west bengal">West Bengal</option>
+                <option value="all states">All states</option>
+                <option value="maharashtra">Maharashtra</option>
+                <option value="uttar pradesh">Uttar Pradesh</option>
+                <option value="karnataka">Karnataka</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs uppercase tracking-wide text-slate-400">Private job sites to include (comma)</label>
+              <input id="privateSites"
+                class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                placeholder="e.g. naukri.com, indeed.co.in" />
+            </div>
+          </div>
 
-                <div class="mt-3">
-                    <label class="inline-flex items-center gap-2">
-                        <input id="onlyPDF" type="checkbox" class="form-checkbox" />
-                        <span class="text-sm">Only PDF / Official notices</span>
-                    </label>
-                    <label class="inline-flex items-center gap-2 ml-4">
-                        <input id="deepHidden" type="checkbox" class="form-checkbox" />
-                        <span class="text-sm">Deep / Hidden-web dorks (inurl:notice, intext:advertisement)</span>
-                    </label>
-                </div>
+          <!-- Flags -->
+          <div class="mt-4 flex flex-wrap gap-4">
+            <label class="inline-flex items-center gap-2 text-sm text-slate-200">
+              <input id="onlyPDF" type="checkbox" class="h-4 w-4 accent-indigo-500 border-slate-600" />
+              <span>Only PDF / Official notices</span>
+            </label>
+            <label class="inline-flex items-center gap-2 text-sm text-slate-200">
+              <input id="deepHidden" type="checkbox" class="h-4 w-4 accent-indigo-500 border-slate-600" />
+              <span>Deep / hidden-web dorks (inurl:notice, intext:advertisement)</span>
+            </label>
+          </div>
 
-                <div class="mt-4 flex gap-3">
-                    <button id="buildBtn" class="px-4 py-2 bg-indigo-600 text-white rounded">Build Query</button>
-                    <button id="searchBtn" class="px-4 py-2 bg-emerald-600 text-white rounded">Search (Open)</button>
-                    <button id="multiBtn" class="px-4 py-2 bg-yellow-500 text-black rounded">Multi-Search (Open
-                        tabs)</button>
-                    <button id="copyBtn" class="px-4 py-2 border rounded">Copy Query</button>
+          <!-- Actions -->
+          <div class="mt-6 flex flex-wrap gap-3 items-center">
+            <button id="buildBtn"
+              class="px-4 py-2.5 rounded-lg bg-indigo-500 text-sm font-medium text-white shadow-md shadow-indigo-500/30 hover:bg-indigo-400 transition disabled:opacity-50 disabled:cursor-not-allowed">
+              Build Query
+            </button>
+            <button id="searchBtn"
+              class="px-4 py-2.5 rounded-lg bg-emerald-500 text-sm font-medium text-white shadow-md shadow-emerald-500/30 hover:bg-emerald-400 transition">
+              Search (Open)
+            </button>
+            <button id="multiBtn"
+              class="px-4 py-2.5 rounded-lg bg-amber-400 text-sm font-medium text-slate-900 shadow-md shadow-amber-500/30 hover:bg-amber-300 transition">
+              Multi-Search (Open tabs)
+            </button>
+            <button id="copyBtn"
+              class="px-4 py-2.5 rounded-lg border border-slate-600 text-sm font-medium text-slate-100 hover:bg-slate-800/80 transition">
+              Copy Query
+            </button>
+            <button id="clearBtn"
+              class="px-4 py-2.5 rounded-lg border border-rose-500/70 text-sm font-medium text-rose-200 hover:bg-rose-500/10 transition">
+              Clear & Reset
+            </button>
 
-                    <div class="ml-auto">
-                        <label class="text-xs">Engine</label>
-                        <select id="engine" class="ml-2 p-2 border rounded">
-                            <option value="google">Google</option>
-                            <option value="bing">Bing</option>
-                            <option value="ddg">DuckDuckGo</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="sm:ml-auto flex flex-wrap gap-4 items-center mt-2 sm:mt-0 text-xs text-slate-400">
+              <div class="flex flex-col">
+                <span class="uppercase tracking-wide">Open results in</span>
+                <select id="target"
+                  class="mt-1 px-2 py-1 rounded-md bg-slate-900 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-32">
+                  <option value="_blank">New tab</option>
+                  <option value="_self">Same tab</option>
+                </select>
+              </div>
+              <div class="flex flex-col">
+                <span class="uppercase tracking-wide">Date filter</span>
+                <select id="dateFilter"
+                  class="mt-1 px-2 py-1 rounded-md bg-slate-900 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-32">
+                  <option value="">Any time</option>
+                  <option value="qdr:d">Past day</option>
+                  <option value="qdr:w">Past week</option>
+                  <option value="qdr:m">Past month</option>
+                  <option value="qdr:y">Past year</option>
+                </select>
+              </div>
+              <div class="flex flex-col">
+                <span class="uppercase tracking-wide">Max tabs (multi)</span>
+                <input id="maxTabs" type="number" min="1" max="12" value="4"
+                  class="mt-1 px-2 py-1 rounded-md bg-slate-900 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-20" />
+              </div>
+            </div>
+          </div>
 
-                <div class="mt-4">
-                    <label class="text-xs text-slate-500">Generated query</label>
-                    <pre id="queryOutput" class="mt-1 p-3 bg-slate-100 rounded mono text-sm overflow-x-auto"></pre>
-                </div>
-            </section>
+          <!-- Generated query -->
+          <div class="mt-6">
+            <label class="text-xs uppercase tracking-wide text-slate-400">Generated query</label>
+            <pre id="queryOutput"
+              class="mt-2 p-3 bg-slate-900/80 rounded-xl border border-slate-700 mono text-xs sm:text-sm text-slate-100 overflow-x-auto min-h-[3rem]">
+— no query —
+            </pre>
+          </div>
+        </section>
 
-            <section class="bg-white p-4 rounded-lg shadow-sm">
-                <h2 class="font-medium">Presets / Quick dorks</h2>
-                <p class="text-sm text-slate-500">Click any preset to add to your query.</p>
+        <!-- Presets -->
+        <section
+          class="mt-6 bg-slate-950/60 text-slate-100 rounded-2xl shadow-xl shadow-black/30 border border-slate-800 p-4 sm:p-6">
+          <div class="flex flex-wrap gap-2 items-center justify-between">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-100">Preset OSINT filters</h2>
+              <p class="text-xs text-slate-400 mt-1">Toggle chips to add/remove filters from your query.</p>
+            </div>
+          </div>
 
-                <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
-                    <button class="preset p-2 border rounded text-sm" data-q='filetype:pdf'>Only PDFs</button>
-                    <button class="preset p-2 border rounded text-sm" data-q='site:gov.in'>site:gov.in</button>
-                    <button class="preset p-2 border rounded text-sm" data-q='site:nic.in'>site:nic.in</button>
-                    <button class="preset p-2 border rounded text-sm"
-                        data-q='intitle:vacancy OR intitle:recruitment'>intitle:vacancy/recruitment</button>
-                    <button class="preset p-2 border rounded text-sm"
-                        data-q='inurl:notice OR inurl:advertisement'>inurl:notice/advertisement</button>
-                    <button class="preset p-2 border rounded text-sm" data-q='"walk-in" OR "walk in"'>walk-in</button>
-                    <button class="preset p-2 border rounded text-sm"
-                        data-q='"contractual" OR "temporary"'>contractual</button>
-                    <button class="preset p-2 border rounded text-sm" data-q='"data entry" OR "computer operator"'>IT
-                        roles</button>
-                </div>
-            </section>
+          <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+            <button
+              class="preset-toggle px-3 py-1.5 rounded-full text-xs border border-slate-700 bg-slate-900/80 text-slate-100 hover:bg-slate-800 transition"
+              data-q='filetype:pdf'>Only PDFs</button>
+            <button
+              class="preset-toggle px-3 py-1.5 rounded-full text-xs border border-slate-700 bg-slate-900/80 text-slate-100 hover:bg-slate-800 transition"
+              data-q='site:gov.in'>site:gov.in</button>
+            <button
+              class="preset-toggle px-3 py-1.5 rounded-full text-xs border border-slate-700 bg-slate-900/80 text-slate-100 hover:bg-slate-800 transition"
+              data-q='site:nic.in'>site:nic.in</button>
+            <button
+              class="preset-toggle px-3 py-1.5 rounded-full text-xs border border-slate-700 bg-slate-900/80 text-slate-100 hover:bg-slate-800 transition"
+              data-q='intitle:vacancy OR intitle:recruitment'>intitle:vacancy/recruitment</button>
+            <button
+              class="preset-toggle px-3 py-1.5 rounded-full text-xs border border-slate-700 bg-slate-900/80 text-slate-100 hover:bg-slate-800 transition"
+              data-q='inurl:notice OR inurl:advertisement'>inurl:notice/advertisement</button>
+            <button
+              class="preset-toggle px-3 py-1.5 rounded-full text-xs border border-slate-700 bg-slate-900/80 text-slate-100 hover:bg-slate-800 transition"
+              data-q='"walk-in" OR "walk in"'>walk-in</button>
+            <button
+              class="preset-toggle px-3 py-1.5 rounded-full text-xs border border-slate-700 bg-slate-900/80 text-slate-100 hover:bg-slate-800 transition"
+              data-q='"contractual" OR "temporary"'>contractual</button>
+            <button
+              class="preset-toggle px-3 py-1.5 rounded-full text-xs border border-slate-700 bg-slate-900/80 text-slate-100 hover:bg-slate-800 transition"
+              data-q='"data entry" OR "computer operator"'>IT roles</button>
+          </div>
+        </section>
 
-            <section class="bg-white p-4 rounded-lg shadow-sm">
-                <h2 class="font-medium">Advanced options</h2>
-                <p class="text-sm text-slate-500">Use these to tweak the search string builder behavior.</p>
+        <!-- How it works -->
+        <section
+          class="mt-6 bg-slate-950/50 text-slate-100 rounded-2xl shadow-lg shadow-black/20 border border-slate-800 p-4 sm:p-6">
+          <h2 class="text-sm font-semibold text-slate-100">How it works</h2>
+          <ul class="mt-2 list-disc pl-4 text-xs sm:text-sm text-slate-300 space-y-1">
+            <li>Choose <strong>Government</strong> or <strong>Private</strong>. Gov mode injects gov domains & dorks.</li>
+            <li>Set scope: <em>State / Central / All</em>. State mode can be tuned per state (e.g. West Bengal).</li>
+            <li>Use <strong>Only PDF</strong> for official notifications; enable <strong>Deep / hidden</strong> to
+              search notices buried in folders.</li>
+            <li>Toggle preset chips like <em>site:gov.in</em>, <em>walk-in</em>, <em>contractual</em> to refine.</li>
+            <li>Any change re-activates <strong>Build Query</strong>. Build, copy, then <strong>Search</strong> or
+              <strong>Multi-Search</strong> to open multiple variant dorks.</li>
+          </ul>
+        </section>
 
-                <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div>
-                        <label class="text-xs">Date filter (Google tbs param)</label>
-                        <select id="dateFilter" class="w-full mt-1 p-2 border rounded">
-                            <option value="">Any time</option>
-                            <option value="qdr:d">Past day</option>
-                            <option value="qdr:w">Past week</option>
-                            <option value="qdr:m">Past month</option>
-                            <option value="qdr:y">Past year</option>
-                        </select>
-                    </div>
+        <footer class="mt-6 text-[11px] text-slate-500 text-center">
+          Built for serious OSINT job hunting. Update the curated site lists in the JS to add more states, portals or
+          newspapers.
+        </footer>
+      </div>
+    </main>
+  </div>
 
-                    <div>
-                        <label class="text-xs">Open results in</label>
-                        <select id="target" class="w-full mt-1 p-2 border rounded">
-                            <option value="_blank">New tab</option>
-                            <option value="_self">Same tab</option>
-                        </select>
-                    </div>
+  <script>
+    // --- DATA: curated site lists ---
+    const centralSites = [
+      'https://www.india.gov.in/*',
+      'https://www.ncs.gov.in/*',
+      'https://www.mhrdnats.gov.in/*',
+      'https://www.nta.ac.in/*',
+      'https://employmentnews.gov.in/*'
+    ];
 
-                    <div>
-                        <label class="text-xs">Max results to open (multi-search)</label>
-                        <input id="maxTabs" type="number" min="1" max="12" value="4"
-                            class="w-full mt-1 p-2 border rounded" />
-                    </div>
-                </div>
+    const westBengalSites = [
+      'https://www.kmcgov.in/*',
+      'https://www.mscwb.org/*',
+      'https://wb.gov.in/*',
+      'https://employmentbankwb.gov.in/*',
+      'https://kolkata.gov.in/*',
+      'https://anandabazar.com/*',
+      'https://bartamanpatrika.com/*',
+      'https://telegraphindia.com/*'
+    ];
 
-                <div class="mt-4 text-sm text-slate-500">
-                    <p><strong>Note:</strong> The engine constructs advanced search dorks — some queries open many tabs
-                        if you choose Multi-Search. Your browser may block popups; allow popups for this page to use
-                        multi-open.</p>
-                </div>
-            </section>
+    const allStateNIC = [
+      'site:*.nic.in',
+      'site:*.gov.in'
+    ];
 
-            <section class="bg-white p-4 rounded-lg shadow-sm">
-                <h2 class="font-medium">How it works (brief)</h2>
-                <ul class="list-disc pl-5 mt-2 text-sm text-slate-600">
-                    <li>Choose <em>Gov</em> or <em>Private</em>. Gov mode auto-includes government domains and dorks.
-                    </li>
-                    <li>Choose scope: State / Central / All. For state-level it injects state terms and district nic
-                        sites.</li>
-                    <li>Toggle <em>Only PDF</em> to prefer official notices. Toggle <em>Deep</em> to include
-                        inurl/intext dorks that find buried notices.</li>
-                    <li>Press <strong>Build Query</strong> to preview; press <strong>Search</strong> to open your chosen
-                        engine results.</li>
-                </ul>
-            </section>
+    const privatePortals = [
+      'site:naukri.com',
+      'site:indeed.co.in',
+      'site:monsterindia.com',
+      'site:linkedin.com/jobs'
+    ];
 
-            <footer class="text-sm text-slate-500">Made for Tarikul — tweak the site lists inside the code to add more
-                districts, newspapers or private portals.</footer>
-        </main>
-    </div>
+    // --- UI handles ---
+    const modeGov = document.getElementById('modeGov');
+    const modePriv = document.getElementById('modePriv');
+    const buildBtn = document.getElementById('buildBtn');
+    const searchBtn = document.getElementById('searchBtn');
+    const multiBtn = document.getElementById('multiBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const queryOutput = document.getElementById('queryOutput');
+    const engineSelect = document.getElementById('engine');
+    const engineLabel = document.getElementById('engineLabel');
+    const dateFilterEl = document.getElementById('dateFilter');
+    const targetEl = document.getElementById('target');
+    const maxTabsEl = document.getElementById('maxTabs');
 
-    <script>
-        // --- DATA: curated site lists ---
-        const centralSites = [
-            'https://www.india.gov.in/*',
-            'https://www.ncs.gov.in/*',
-            'https://www.mhrdnats.gov.in/*',
-            'https://www.nta.ac.in/*',
-            'https://employmentnews.gov.in/*'
-        ];
+    const inputIdsToWatch = [
+      'keywords', 'exact', 'exclude',
+      'govScope', 'stateSelect', 'privateSites',
+      'onlyPDF', 'deepHidden'
+    ];
 
-        const westBengalSites = [
-            'https://www.kmcgov.in/*',
-            'https://www.mscwb.org/*',
-            'https://wb.gov.in/*',
-            'https://employmentbankwb.gov.in/*',
-            'https://kolkata.gov.in/*',
-            'https://anandabazar.com/*',
-            'https://bartamanpatrika.com/*',
-            'https://telegraphindia.com/*'
-        ];
+    const selectedPresets = new Set();
+    const presetButtons = document.querySelectorAll('.preset-toggle');
 
-        const allStateNIC = [
-            // pattern for district nic. Add/extend in code if needed
-            'site:*.nic.in',
-            'site:*.gov.in'
-        ];
+    // --- helpers: dirty state for Build button ---
+    function disableBuild() {
+      buildBtn.disabled = true;
+    }
 
-        const privatePortals = [
-            'site:naukri.com',
-            'site:indeed.co.in',
-            'site:monsterindia.com',
-            'site:linkedin.com/jobs'
-        ];
+    function enableBuild() {
+      buildBtn.disabled = false;
+    }
 
-        // --- UI handles ---
-        const modeGov = document.getElementById('modeGov');
-        const modePriv = document.getElementById('modePriv');
-        const buildBtn = document.getElementById('buildBtn');
-        const searchBtn = document.getElementById('searchBtn');
-        const multiBtn = document.getElementById('multiBtn');
-        const copyBtn = document.getElementById('copyBtn');
-        const queryOutput = document.getElementById('queryOutput');
-        const engineSelect = document.getElementById('engine');
-        const engineLabel = document.getElementById('engineLabel');
-        const presetButtons = document.querySelectorAll('.preset');
+    function markDirty() {
+      enableBuild();
+    }
 
-        engineSelect.addEventListener('change', () => {
-            engineLabel.textContent = engineSelect.value === 'google' ? 'Google' : (engineSelect.value === 'bing' ? 'Bing' : 'DuckDuckGo');
-        });
+    // init disabled until first change
+    disableBuild();
 
-        presetButtons.forEach(b => {
-            b.addEventListener('click', () => {
-                const txt = document.getElementById('keywords');
-                const add = b.dataset.q;
-                txt.value = (txt.value ? txt.value + ' ' : '') + add;
-            });
-        });
+    engineSelect.addEventListener('change', () => {
+      engineLabel.textContent =
+        engineSelect.value === 'google'
+          ? 'Google'
+          : engineSelect.value === 'bing'
+            ? 'Bing'
+            : 'DuckDuckGo';
+    });
 
-        function buildDork() {
-            const kw = document.getElementById('keywords').value.trim();
-            const exact = document.getElementById('exact').value.trim();
-            const exclude = document.getElementById('exclude').value.split(',').map(s => s.trim()).filter(Boolean);
-            const govScope = document.getElementById('govScope').value;
-            const state = document.getElementById('stateSelect').value;
-            const onlyPDF = document.getElementById('onlyPDF').checked;
-            const deepHidden = document.getElementById('deepHidden').checked;
-            const privSitesInput = document.getElementById('privateSites').value.split(',').map(s => s.trim()).filter(Boolean);
+    // watch inputs for changes -> mark dirty
+    inputIdsToWatch.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const eventName = el.tagName === 'SELECT' || el.type === 'checkbox' ? 'change' : 'input';
+      el.addEventListener(eventName, markDirty);
+    });
 
-            let parts = [];
-            if (kw) parts.push(kw);
-            if (exact) parts.push('"' + exact.replace(/\"/g, '') + '"');
+    modeGov.addEventListener('change', () => {
+      document.getElementById('govScope').disabled = false;
+      document.getElementById('stateSelect').disabled = false;
+      markDirty();
+    });
 
-            // exclude
-            exclude.forEach(e => {
-                if (e) parts.push('-"' + e + '"');
-            });
+    modePriv.addEventListener('change', () => {
+      document.getElementById('govScope').disabled = true;
+      document.getElementById('stateSelect').disabled = true;
+      markDirty();
+    });
 
-            // mode
-            if (modeGov.checked) {
-                // include government specific site dorks based on scope
-                if (govScope === 'central') {
-                    parts.push(allStateNIC.join(' OR '));
-                    parts.push(centralSites.map(s => s.replace('/*', '')).map(s => `site:${s.replace(/https?:\/\//, '')}`).join(' OR '));
-                } else if (govScope === 'state') {
-                    // for state-level include state site list and state keyword
-                    parts.push(westBengalSites.map(s => `site:${s.replace(/https?:\/\//, '').replace(/\*$/, '')}`).join(' OR '));
-                    if (state) parts.push('"' + state + '"');
-                } else {
-                    parts.push(allStateNIC.join(' OR '));
-                    parts.push(westBengalSites.map(s => `site:${s.replace(/https?:\/\//, '').replace(/\*$/, '')}`).join(' OR '));
-                }
+    // preset toggle buttons
+    presetButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const q = btn.dataset.q;
+        if (selectedPresets.has(q)) {
+          selectedPresets.delete(q);
+          btn.classList.remove('bg-indigo-500', 'text-white', 'border-indigo-400', 'shadow', 'shadow-indigo-500/30');
+          btn.classList.add('bg-slate-900/80', 'text-slate-100', 'border-slate-700');
+        } else {
+          selectedPresets.add(q);
+          btn.classList.remove('bg-slate-900/80', 'text-slate-100', 'border-slate-700');
+          btn.classList.add('bg-indigo-500', 'text-white', 'border-indigo-400', 'shadow', 'shadow-indigo-500/30');
+        }
+        markDirty();
+      });
+    });
 
-                if (onlyPDF) parts.push('filetype:pdf');
-                if (deepHidden) parts.push('(inurl:notice OR inurl:advertisement OR intext:advertisement OR intext:notification OR inurl:recruitment)');
-            } else {
-                // private mode
-                const sites = privSitesInput.length ? privSitesInput.map(s => `site:${s.replace(/https?:\/\//, '')}`) : privatePortals;
-                parts.push(sites.join(' OR '));
-                if (deepHidden) {
-                    parts.push('("hiring" OR "apply now" OR "job opening" OR "urgent requirement")');
-                }
-            }
+    function buildDork() {
+      const kw = document.getElementById('keywords').value.trim();
+      const exact = document.getElementById('exact').value.trim();
+      const exclude = document.getElementById('exclude').value.split(',').map(s => s.trim()).filter(Boolean);
+      const govScope = document.getElementById('govScope').value;
+      const state = document.getElementById('stateSelect').value;
+      const onlyPDF = document.getElementById('onlyPDF').checked;
+      const deepHidden = document.getElementById('deepHidden').checked;
+      const privSitesInput = document.getElementById('privateSites').value.split(',').map(s => s.trim()).filter(Boolean);
 
-            // final assembled
-            const final = parts.filter(Boolean).join(' ');
-            return final;
+      let parts = [];
+      if (kw) parts.push(kw);
+      if (exact) parts.push('"' + exact.replace(/\"/g, '') + '"');
+
+      // exclude
+      exclude.forEach(e => {
+        if (e) parts.push('-"' + e + '"');
+      });
+
+      // mode
+      if (modeGov.checked) {
+        if (govScope === 'central') {
+          parts.push(allStateNIC.join(' OR '));
+          parts.push(
+            centralSites
+              .map(s => s.replace('/*', ''))
+              .map(s => `site:${s.replace(/https?:\/\//, '')}`)
+              .join(' OR ')
+          );
+        } else if (govScope === 'state') {
+          parts.push(
+            westBengalSites
+              .map(s => `site:${s.replace(/https?:\/\//, '').replace(/\*$/, '')}`)
+              .join(' OR ')
+          );
+          if (state) parts.push('"' + state + '"');
+        } else {
+          parts.push(allStateNIC.join(' OR '));
+          parts.push(
+            westBengalSites
+              .map(s => `site:${s.replace(/https?:\/\//, '').replace(/\*$/, '')}`)
+              .join(' OR ')
+          );
         }
 
-        buildBtn.addEventListener('click', () => {
-            const q = buildDork();
-            queryOutput.textContent = q || '— no query —';
-        });
-
-        copyBtn.addEventListener('click', () => {
-            const q = buildDork();
-            navigator.clipboard.writeText(q).then(() => {
-                copyBtn.textContent = 'Copied!';
-                setTimeout(() => copyBtn.textContent = 'Copy Query', 1200);
-            });
-        });
-
-        function searchOpenTabs(queries, target) {
-            const engine = engineSelect.value;
-            const urls = queries.map(q => {
-                const enc = encodeURIComponent(q);
-                if (engine === 'google') return `https://www.google.com/search?q=${enc}`;
-                if (engine === 'bing') return `https://www.bing.com/search?q=${enc}`;
-                return `https://duckduckgo.com/?q=${enc}`;
-            });
-
-            urls.forEach(u => window.open(u, target));
+        if (onlyPDF) parts.push('filetype:pdf');
+        if (deepHidden) {
+          parts.push('(inurl:notice OR inurl:advertisement OR intext:advertisement OR intext:notification OR inurl:recruitment)');
         }
+      } else {
+        // private mode
+        const sites = privSitesInput.length
+          ? privSitesInput.map(s => `site:${s.replace(/https?:\/\//, '')}`)
+          : privatePortals;
+        parts.push(sites.join(' OR '));
+        if (deepHidden) {
+          parts.push('("hiring" OR "apply now" OR "job opening" OR "urgent requirement")');
+        }
+      }
 
-        searchBtn.addEventListener('click', () => {
-            const q = buildDork();
-            if (!q) return alert('Add some keywords first');
+      // preset filters
+      if (selectedPresets.size > 0) {
+        parts.push([...selectedPresets].join(' '));
+      }
 
-            const engine = engineSelect.value;
-            const enc = encodeURIComponent(q);
-            let url = '';
-            if (engine === 'google') url = `https://www.google.com/search?q=${enc}`;
-            else if (engine === 'bing') url = `https://www.bing.com/search?q=${enc}`;
-            else url = `https://duckduckgo.com/?q=${enc}`;
+      const final = parts.filter(Boolean).join(' ');
+      return final;
+    }
 
-            const target = document.getElementById('target').value;
-            window.open(url, target);
-        });
+    buildBtn.addEventListener('click', () => {
+      const q = buildDork();
+      queryOutput.textContent = q || '— no query —';
+      disableBuild();
+    });
 
-        multiBtn.addEventListener('click', () => {
-            const maxTabs = parseInt(document.getElementById('maxTabs').value || '4', 10);
-            const baseQuery = buildDork();
-            if (!baseQuery) return alert('Add some keywords first');
+    copyBtn.addEventListener('click', () => {
+      const q = buildDork();
+      if (!q) {
+        alert('Build a query first.');
+        return;
+      }
+      navigator.clipboard.writeText(q).then(() => {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => (copyBtn.textContent = 'Copy Query'), 1200);
+      });
+    });
 
-            // Create several useful query variations and open them
-            const variants = [];
-            variants.push(baseQuery);
-            variants.push(baseQuery + ' filetype:pdf');
-            variants.push(baseQuery + ' inurl:notice OR inurl:advertisement');
-            variants.push(baseQuery + ' intitle:vacancy OR intitle:recruitment');
-            variants.push(baseQuery + ' "walk-in"');
+    function makeSearchUrl(engine, q, dateFilter) {
+      const enc = encodeURIComponent(q);
+      if (engine === 'google') {
+        const tbs = dateFilter ? `&tbs=${dateFilter}` : '';
+        return `https://www.google.com/search?q=${enc}${tbs}`;
+      }
+      if (engine === 'bing') {
+        return `https://www.bing.com/search?q=${enc}`;
+      }
+      return `https://duckduckgo.com/?q=${enc}`;
+    }
 
-            // if private, add portals specific queries
-            if (modePriv.checked) {
-                variants.push(baseQuery + ' site:indeed.co.in');
-                variants.push(baseQuery + ' site:naukri.com');
-            }
+    function searchOpenTabs(queries, target) {
+      const engine = engineSelect.value;
+      const dateFilter = dateFilterEl.value;
+      const urls = queries.map(q => makeSearchUrl(engine, q, dateFilter));
+      urls.forEach(u => window.open(u, target));
+    }
 
-            // limit and open
-            const openSet = variants.slice(0, maxTabs);
-            searchOpenTabs(openSet, document.getElementById('target').value);
-        });
+    searchBtn.addEventListener('click', () => {
+      const q = buildDork();
+      if (!q) return alert('Add some keywords first');
+      const target = targetEl.value;
+      const url = makeSearchUrl(engineSelect.value, q, dateFilterEl.value);
+      window.open(url, target);
+    });
 
-        // small UX: toggle state select when gov/private changes
-        modeGov.addEventListener('change', () => {
-            document.getElementById('govScope').disabled = false;
-            document.getElementById('stateSelect').disabled = false;
-        });
-        modePriv.addEventListener('change', () => {
-            document.getElementById('govScope').disabled = true;
-            document.getElementById('stateSelect').disabled = true;
-        });
+    multiBtn.addEventListener('click', () => {
+      const maxTabs = parseInt(maxTabsEl.value || '4', 10);
+      const baseQuery = buildDork();
+      if (!baseQuery) return alert('Add some keywords first');
 
-        // init
-        document.getElementById('govScope').dispatchEvent(new Event('change'));
-    </script>
+      const variants = [];
+      variants.push(baseQuery);
+      variants.push(baseQuery + ' filetype:pdf');
+      variants.push(baseQuery + ' inurl:notice OR inurl:advertisement');
+      variants.push(baseQuery + ' intitle:vacancy OR intitle:recruitment');
+      variants.push(baseQuery + ' "walk-in"');
+
+      if (modePriv.checked) {
+        variants.push(baseQuery + ' site:indeed.co.in');
+        variants.push(baseQuery + ' site:naukri.com');
+      }
+
+      const openSet = variants.slice(0, maxTabs);
+      searchOpenTabs(openSet, targetEl.value);
+    });
+
+    // Clear & reset
+    clearBtn.addEventListener('click', () => {
+      document.getElementById('keywords').value = '';
+      document.getElementById('exact').value = '';
+      document.getElementById('exclude').value = '';
+      document.getElementById('govScope').value = 'state';
+      document.getElementById('stateSelect').value = 'west bengal';
+      document.getElementById('privateSites').value = '';
+      document.getElementById('onlyPDF').checked = false;
+      document.getElementById('deepHidden').checked = false;
+      engineSelect.value = 'google';
+      engineLabel.textContent = 'Google';
+      dateFilterEl.value = '';
+      targetEl.value = '_blank';
+      maxTabsEl.value = '4';
+      modeGov.checked = true;
+      modePriv.checked = false;
+      document.getElementById('govScope').disabled = false;
+      document.getElementById('stateSelect').disabled = false;
+
+      // reset presets
+      selectedPresets.clear();
+      presetButtons.forEach(btn => {
+        btn.classList.remove('bg-indigo-500', 'text-white', 'border-indigo-400', 'shadow', 'shadow-indigo-500/30');
+        btn.classList.add('bg-slate-900/80', 'text-slate-100', 'border-slate-700');
+      });
+
+      queryOutput.textContent = '— no query —';
+      disableBuild();
+    });
+
+    // initial state
+    document.getElementById('govScope').dispatchEvent(new Event('change'));
+  </script>
 </body>
 
 </html>
